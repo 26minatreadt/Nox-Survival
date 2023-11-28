@@ -1,2 +1,0 @@
-Used MIT assets
-- https://github.com/dbrizov/NaughtyCharacter
