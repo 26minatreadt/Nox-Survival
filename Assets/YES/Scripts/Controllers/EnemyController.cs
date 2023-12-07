@@ -1,51 +1,45 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
-/* Controls the Enemy AI */
+/* Makes enemies follow and attack the player */
 
+[RequireComponent(typeof(CharacterCombat))]
 public class EnemyController : MonoBehaviour {
 
-	public float lookRadius = 10f;	// Detection range for player
+	public float lookRadius = 10f;
 
-	Transform target;	// Reference to the player
-	NavMeshAgent agent; // Reference to the NavMeshAgent
-	CharacterCombat combat;
+	Transform target;
+	NavMeshAgent agent;
+	CharacterCombat combatManager;
 
-	// Use this for initialization
-	void Start () {
-		target = PlayerManager.instance.player.transform;
+	void Start()
+	{
+		target = Player.instance.transform;
 		agent = GetComponent<NavMeshAgent>();
-		combat = GetComponent<CharacterCombat>();
+		combatManager = GetComponent<CharacterCombat>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		// Distance to the target
+
+	void Update ()
+	{
+		// Get the distance to the player
 		float distance = Vector3.Distance(target.position, transform.position);
 
-		// If inside the lookRadius
+		// If inside the radius
 		if (distance <= lookRadius)
 		{
-			// Move towards the target
+			// Move towards the player
 			agent.SetDestination(target.position);
-
-			// If within attacking distance
 			if (distance <= agent.stoppingDistance)
 			{
-				CharacterStats targetStats = target.GetComponent<CharacterStats>();
-				if (targetStats != null)
-				{
-					combat.Attack(targetStats);
-				}
-
-				FaceTarget();	// Make sure to face towards the target
+				// Attack
+				combatManager.Attack(Player.instance.playerStats);
+				FaceTarget();
 			}
 		}
 	}
 
-	// Rotate to face the target
+	// Point towards the player
 	void FaceTarget ()
 	{
 		Vector3 direction = (target.position - transform.position).normalized;
@@ -53,10 +47,10 @@ public class EnemyController : MonoBehaviour {
 		transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
 	}
 
-	// Show the lookRadius in editor
 	void OnDrawGizmosSelected ()
 	{
 		Gizmos.color = Color.red;
 		Gizmos.DrawWireSphere(transform.position, lookRadius);
 	}
+
 }

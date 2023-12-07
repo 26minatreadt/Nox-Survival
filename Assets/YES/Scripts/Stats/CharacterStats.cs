@@ -1,46 +1,54 @@
 using UnityEngine;
 
-/* Base class that player and enemies can derive from to include stats. */
+/* Contains all the stats for a character. */
 
 public class CharacterStats : MonoBehaviour {
 
-	// Health
-	public int maxHealth = 100;
-	public int currentHealth { get; private set; }
+	public Stat maxHealth;			// Maximum amount of health
+	public int currentHealth {get;protected set;}	// Current amount of health
 
 	public Stat damage;
 	public Stat armor;
 
-	// Set current health to max health
-	// when starting the game.
-	void Awake ()
+	public event System.Action OnHealthReachedZero;
+
+	public virtual void Awake() {
+		currentHealth = maxHealth.GetValue();
+	}
+
+	// Start with max HP.
+	public virtual void Start ()
 	{
-		currentHealth = maxHealth;
+		
 	}
 
 	// Damage the character
 	public void TakeDamage (int damage)
 	{
-		// Subtract the armor value
+		// Subtract the armor value - Make sure damage doesn't go below 0.
 		damage -= armor.GetValue();
 		damage = Mathf.Clamp(damage, 0, int.MaxValue);
 
-		// Damage the character
+		// Subtract damage from health
 		currentHealth -= damage;
 		Debug.Log(transform.name + " takes " + damage + " damage.");
 
-		// If health reaches zero
+		// If we hit 0. Die.
 		if (currentHealth <= 0)
 		{
-			Die();
+			if (OnHealthReachedZero != null) {
+				OnHealthReachedZero ();
+			}
 		}
 	}
 
-	public virtual void Die ()
+	// Heal the character.
+	public void Heal (int amount)
 	{
-		// Die in some way
-		// This method is meant to be overwritten
-		Debug.Log(transform.name + " died.");
+		currentHealth += amount;
+		currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth.GetValue());
 	}
+
+
 
 }

@@ -1,45 +1,47 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-// Makes the camera follow the player
+/* Makes the camera follow the player */
 
 public class CameraController : MonoBehaviour {
 
-	public Transform target;	// Target to follow (player)
+	public Transform target;
 
-	public Vector3 offset;			// Offset from the player
-	public float zoomSpeed = 4f;	// How quickly we zoom
-	public float minZoom = 5f;		// Min zoom amount
-	public float maxZoom = 15f;		// Max zoom amount
+	public Vector3 offset;
+	public float smoothSpeed = 2f;
 
-	public float pitch = 2f;		// Pitch up the camera to look at head
+	public float currentZoom = 1f;
+	public float maxZoom = 3f;
+	public float minZoom = .3f;
+	public float yawSpeed = 70;
+	public float zoomSensitivity = .7f;
+	float dst;
 
-	public float yawSpeed = 100f;	// How quickly we rotate
+	float zoomSmoothV;
+	float targetZoom;
 
-	// In these variables we store input from Update
-	private float currentZoom = 10f;
-	private float currentYaw = 0f;
+	void Start() {
+		dst = offset.magnitude;
+		transform.LookAt (target);
+		targetZoom = currentZoom;
+	}
 
 	void Update ()
 	{
-		// Adjust our zoom based on the scrollwheel
-		currentZoom -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
-		currentZoom = Mathf.Clamp(currentZoom, minZoom, maxZoom);
+		float scroll = Input.GetAxisRaw("Mouse ScrollWheel") * zoomSensitivity;
 
-		// Adjust our camera's rotation around the player
-		currentYaw -= Input.GetAxis("Horizontal") * yawSpeed * Time.deltaTime;
+		if (scroll != 0f)
+		{
+			targetZoom = Mathf.Clamp(targetZoom - scroll, minZoom, maxZoom);
+		}
+		currentZoom = Mathf.SmoothDamp (currentZoom, targetZoom, ref zoomSmoothV, .15f);
 	}
 
-	void LateUpdate ()
-	{
-		// Set our cameras position based on offset and zoom
-		transform.position = target.position - offset * currentZoom;
-		// Look at the player's head
-		transform.LookAt(target.position + Vector3.up * pitch);
+	void LateUpdate () {
+		transform.position = target.position - transform.forward * dst * currentZoom;
+		transform.LookAt(target.position);
 
-		// Rotate around the player
-		transform.RotateAround(target.position, Vector3.up, currentYaw);
+		float yawInput = Input.GetAxisRaw ("Horizontal");
+		transform.RotateAround (target.position, Vector3.up, -yawInput * yawSpeed * Time.deltaTime);
 	}
 
 }

@@ -2,18 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/* Class used for all stats where we want to be able to add/remove modifiers */
+/* Base class for all stats: health, armor, damage etc. */
 
 [System.Serializable]
 public class Stat {
 
-	[SerializeField]
-	private int baseValue;	// Starting value
+	public int baseValue;	// Starting value
 
-	// List of modifiers that change the baseValue
+	// Keep a list of all the modifiers on this stat
 	private List<int> modifiers = new List<int>();
 
-	// Get the final value after applying modifiers
+	// Add all modifiers together and return the result
 	public int GetValue ()
 	{
 		int finalValue = baseValue;
@@ -21,14 +20,14 @@ public class Stat {
 		return finalValue;
 	}
 
-	// Add new modifier
+	// Add a new modifier to the list
 	public void AddModifier (int modifier)
 	{
 		if (modifier != 0)
 			modifiers.Add(modifier);
 	}
 
-	// Remove a modifier
+	// Remove a modifier from the list
 	public void RemoveModifier (int modifier)
 	{
 		if (modifier != 0)

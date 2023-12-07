@@ -1,38 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-/* Handles the players stats and adds/removes modifiers when equipping items. */
+/*
+	This component is derived from CharacterStats. It adds two things:
+		- Gaining modifiers when equipping items
+		- Restarting the game when dying
+*/
 
 public class PlayerStats : CharacterStats {
 
 	// Use this for initialization
-	void Start () {
+	public override void Start () {
+
+		base.Start();
 		EquipmentManager.instance.onEquipmentChanged += OnEquipmentChanged;
 	}
-	
-	// Called when an item gets equipped/unequipped
-	void OnEquipmentChanged (Equipment newItem, Equipment oldItem)
+
+	void OnEquipmentChanged(Equipment newItem, Equipment oldItem)
 	{
-		// Add new modifiers
-		if (newItem != null)
-		{
-			armor.AddModifier(newItem.armorModifier);
-			damage.AddModifier(newItem.damageModifier);
+		if (newItem != null) {
+			armor.AddModifier (newItem.armorModifier);
+			damage.AddModifier (newItem.damageModifier);
 		}
 
-		// Remove old modifiers
 		if (oldItem != null)
 		{
 			armor.RemoveModifier(oldItem.armorModifier);
-			damage.RemoveModifier(oldItem.damageModifier);
+			damage.RemoveModifier(oldItem.armorModifier);
 		}
-		
+
 	}
 
-	public override void Die()
-	{
-		base.Die();
-		PlayerManager.instance.KillPlayer();
-	}
+
+
 }
