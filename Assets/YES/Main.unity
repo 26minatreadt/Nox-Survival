@@ -3257,6 +3257,14 @@ PrefabInstance:
       propertyPath: weaponAnimations.Array.data[1].weapons.Array.data[0]
       value: 
       objectReference: {fileID: 11400000, guid: 5ba3c3729fd314669bd21753d7085aa1, type: 2}
+    - target: {fileID: 114763211692402470, guid: 4a5e8315f342741d1963b87f80a4a332, type: 3}
+      propertyPath: movementMask.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114763211692402470, guid: 4a5e8315f342741d1963b87f80a4a332, type: 3}
+      propertyPath: interactionMask.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 195266525255351556, guid: 4a5e8315f342741d1963b87f80a4a332, type: 3}
       propertyPath: m_Acceleration
       value: 20

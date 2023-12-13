@@ -51,5 +51,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Nox-Survival.sln"
+    "dotnet.defaultSolution": "Nox-Survival.sln",
+    "dotnet.preferCSharpExtension": true
 }
